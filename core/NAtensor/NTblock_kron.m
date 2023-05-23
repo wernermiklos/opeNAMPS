@@ -1,5 +1,9 @@
 function  [newblock,newshape] = NTblock_kron(obj,other,objshape,othershape)
-            % Returns the Kronecker (tensor-) product of obj and other.
+            % Generalization of the kron() function for general (N-dimensional)
+            % tensors (arrays).
+            %  - obj, other: N-dimensional arrays
+            %  - objshape, othershape: the sizes of the arrays (containing also the
+            %                          singleton dimensions)
             if length(objshape) ~= length(othershape)
                 error('Error: the two tensors must have the same number of legs.')
             end

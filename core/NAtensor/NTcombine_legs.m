@@ -1,6 +1,17 @@
 function out = NTcombine_legs(obj, LegNames, NewLegName)
-%NTCOMBINE_LEGS Summary of this function goes here
-%   Detailed explanation goes here
+% Generalization of the MatLab reshape() function for NAtensors.
+% ---
+% obj:        - NAtensor structure
+% LegNames:   - List of LegNames (of "obj") which we want to combine to a
+%               single leg. The Legs should be of the same type (incoming or
+%               outgoing)
+% NewLegName: - Name of the new (combined) leg.
+%
+% ---
+% out: - NAtensor struct which containes the new "combined" leg.
+% ---
+% Note, that the dependencies of the new "combined" leg will be the union of
+% the dependencies of the old legs.
     legpos = NTlocate_legs(obj,LegNames);
     keptlegs = 1:length(obj.leg_names);
     keptlegs(legpos) = [];

@@ -1,5 +1,10 @@
 function key = NTgenerate_key(obj, IrrepPositions, IrrepIndices)
 % Generates the key-string from IrrepPositions and IrrepIndices
+% ---
+% - IrrepPositions: format {{legname1, depID1}, {legname2, depID2}, ...}
+%                   all irreps must be specified
+% - IrrepIndices: cell array of irrep quantum numbers in the order
+%                 specified by IrrepPositions
             irrep_list = zeros(1,length(IrrepPositions));
             for i = 1:length(IrrepPositions)
                 irrep_list(i) = obj.dependencies{strcmp(obj.leg_names, IrrepPositions{i}{1})}(IrrepPositions{i}{2});

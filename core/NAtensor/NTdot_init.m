@@ -1,6 +1,5 @@
 function out = NTdot_init(obj, other, legnames1, legnames2, renaming)
-%NTDOT_INIT Summary of this function goes here
-%   Detailed explanation goes here
+%NTDOT_INIT init function called only by NTdot and LNTdot.
     if ~strcmp(other.type,'NAtensor') && ~strcmp(other.type,'LNAtensor')
         error('Error in NTdot(): other must be an NAtensor or LNAtensor.')
     end
@@ -13,11 +12,7 @@ function out = NTdot_init(obj, other, legnames1, legnames2, renaming)
     end
     legpos1 = NTlocate_legs(obj, legnames1);
     legpos2 = NTlocate_legs(other, legnames2);
-    %freelegs1 = 1:length(obj.leg_names);
-    %freelegs1(legpos1) = [];
-    %freelegs2 = 1:length(other.leg_names);
-    %freelegs2(legpos2) = [];
-
+    
     if length(unique(legpos1)) ~= length(legpos1) || ...
            length(unique(legpos2)) ~= length(legpos2)
         error('Repetition in legnames1 or legnames2')
@@ -84,18 +79,6 @@ function out = NTdot_init(obj, other, legnames1, legnames2, renaming)
         new_irrepindices2(tmpirrepindices2 == neworder(i)) = i;
     end
 
-    % We may want to do this
-%             if length(unique(newirrepindices1)) ~= length(newirrepindices1)    % there is a irrep match within the tensor 'obj' ==> we can 'pre-filter' the blocks
-%                 prefilter1 = true;
-%             else
-%                 prefilter1 = false;
-%             end
-%             
-%             if length(unique(newirrepindices2)) ~= length(newirrepindices2)    % there is a irrep match within the tensor 'other' ==> we can 'pre-filter' the blocks
-%                 prefilter2 = true;
-%             else
-%                 prefilter2 = false;
-%             end
 
     % Now we create the list of new leg names. If the name of a free (remaining) leg is listed in renaming{1} (legs
     % of obj), or renaming{2} (legs of other), then the new name is stored. Otherwise we store the name of the leg as
@@ -137,24 +120,7 @@ function out = NTdot_init(obj, other, legnames1, legnames2, renaming)
     end
 
 
-    
-    
-    % We determine how the new block key is generated from key1 and
-    % key2
-%     outkey_layout1 = zeros(1,obj.irrep_number*obj.no_of_symmetries);
-%     outkey_layout2 = zeros(1,other.irrep_number*other.no_of_symmetries);
-%     for newirrepID = 1:new_irrep_number
-%         pos1 = find(newirrepindices1 == newirrepID,1);
-%         if ~isempty(pos1)
-%             outkey_layout1((obj.no_of_symmetries*(pos1-1)+1):(obj.no_of_symmetries*pos1)) = ...
-%                 (obj.no_of_symmetries*(newirrepID-1)+1):(obj.no_of_symmetries*newirrepID);
-%         else
-%             pos2 = find(newirrepindices2 == newirrepID,1);
-%             outkey_layout2((other.no_of_symmetries*(pos2-1)+1):(other.no_of_symmetries*pos2)) = ...
-%                 (other.no_of_symmetries*(newirrepID-1)+1):(other.no_of_symmetries*newirrepID);
-%         end
-%     end
-
+    % --- Output structure is built.
     out = struct();
     out.legpos1 = legpos1;
     out.legpos2 = legpos2;

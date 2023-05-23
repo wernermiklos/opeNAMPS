@@ -18,10 +18,8 @@ function out = NTdot(obj, other, legnames1, legnames2, renaming)
             %                             {'oldname1_2', 'newname1_2'}, ...},
             %                            {{'oldname2_1', 'newname2_1'}, ...
             %                             {'oldname2_2', 'newname2_2'}}}
-            if verLessThan('matlab','9.13')
-                actual_tensordot = @tensordot_C;   % for release <= R2022a we must use the C-MEX version
-            else
-                actual_tensordot = @tensordot;     % for release <= R2022a we use the wrapped built in version.
+            if verLessThan('matlab','9.12')
+                error('MatLab R2022a or newer is required.')
             end
 
             if nargin == 4
@@ -79,23 +77,26 @@ function out = NTdot(obj, other, legnames1, legnames2, renaming)
             
             
             % we perform tasks
-            legpos1 = int32(dotinfo.legpos1);
-            legpos2 = int32(dotinfo.legpos2);
-            keptlegs1 = int32(dotinfo.keptlegs1);
-            keptlegs2 = int32(dotinfo.keptlegs2);                                       
-            blocklist = cell(1,length(keylist));
+            legpos1 = dotinfo.legpos1;
+            legpos2 = dotinfo.legpos2;                                     
             
+            blocklist = cell(1,length(keylist));
+            NumLegsObj = length(obj.leg_names);
+
             for taskID = 1:size(tasklist,1)
-                
                 if isempty(blocklist{tasklist(taskID,3)})
-                    blocklist{tasklist(taskID,3)} = actual_tensordot(objvalues{tasklist(taskID,1)},...
-                                                                     othervalues{tasklist(taskID,2)}, ...
-                                                                     legpos1,legpos2,keptlegs1,keptlegs2);
+                    blocklist{tasklist(taskID,3)} = tensorprod(objvalues{tasklist(taskID,1)},...
+                                                               othervalues{tasklist(taskID,2)}, ...
+                                                               legpos1,...
+                                                               legpos2,...
+                                                               NumDimensionsA = NumLegsObj);
                 else
                     blocklist{tasklist(taskID,3)} =  blocklist{tasklist(taskID,3)} + ...
-                                                          actual_tensordot(objvalues{tasklist(taskID,1)},...
-                                                                           othervalues{tasklist(taskID,2)}, ...
-                                                                           legpos1,legpos2,keptlegs1,keptlegs2);
+                                                     tensorprod(objvalues{tasklist(taskID,1)},...
+                                                                othervalues{tasklist(taskID,2)}, ...
+                                                                legpos1,...
+                                                                legpos2,...
+                                                                NumDimensionsA = NumLegsObj);
                 end
             end
             

@@ -1,8 +1,18 @@
 function [irreps, blocks, shapes] = NTexport_all_data_blocks(obj, IrrepPositions, LegNames)
             % Exports list of all data blocks and the corresponding irrep values in cell arrays.
-            % The irrep positions are specified in IrrepPositions
-            % {{'legname1',depID1},{'legname2',depID2},...}, the desired
-            % leg order is specified in LegNames.
+            % ---
+            % - The irrep positions are specified in IrrepPositions in format
+            % {{'legname1',depID1},{'legname2',depID2},...}
+            % - The desired leg order is specified in LegNames (all legs must 
+            % be present in the list).
+            % ---
+            % irreps: cell array, elements are again cell arrays that
+            %         contain the quantum numbers of the irreps specified
+            %         in "IrrepPositions"
+            % blocks: cell array of blocks of the tensor, legs are permuted 
+            % according to the order in LegNames
+            % shapes: list of shapes of blocks (containing singleton legs
+            %         too)
             irrep_positions = NTlocate_irreps(obj,IrrepPositions);
             if length(irrep_positions) ~= length(unique(irrep_positions)) || ...
                     length(unique(irrep_positions)) ~= obj.irrep_number

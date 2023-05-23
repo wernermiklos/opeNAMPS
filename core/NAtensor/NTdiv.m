@@ -1,5 +1,5 @@
 function out = NTdiv(obj,val)
-%NTDIV Returns obj / val.
+%NTDIV Returns obj / val, where val is a number.
      if ~(isnumeric(val) && isequal(size(val),[1,1]))
                 error('Error in LNAtensor / val : "val" must be 1D numerical variable.')
      end

@@ -2,8 +2,8 @@ function [other_leg_positions, other_irrep_positions, other_key_layout] = NTcons
 % Generates the consistency transformation from "other" to
 % "obj" if the two tensors are consistent.
 % ----------------------------------------
-% other_leg_positions:     the leg positions in "other"
-% other_irrep_positions:   the irrep positions in "other"
+% other_leg_positions:     the leg positions of "obj" in "other"
+% other_irrep_positions:   the irrep positions of "obj" in "other"
 % key_layout:              the transformation rules for keys
 %                          from other to obj
             if obj.no_of_symmetries ~= other.no_of_symmetries

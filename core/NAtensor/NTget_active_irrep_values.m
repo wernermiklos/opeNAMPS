@@ -1,5 +1,10 @@
 function irreps = NTget_active_irrep_values(obj, IrrepPositions)
-            % Returns the list of irrep values that encode active blocks.
+            % Similar to NTexport_all_data_blocks, but only returns the list of 
+            % irrep quantum numbers that encode active blocks.
+            % --- 
+            % - IrrepPositions: format {{legname1,depID1},{legname2,depID2},...}
+            %                   all irreps of the tensor must be fixed in
+            %                   IrrepPositions.
             irrep_positions = NTlocate_irreps(obj,IrrepPositions);
             if length(irrep_positions) ~= length(unique(irrep_positions)) || ...
                     length(unique(irrep_positions)) ~= obj.irrep_number
