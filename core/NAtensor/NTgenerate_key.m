@@ -1,5 +1,6 @@
 function key = NTgenerate_key(obj, IrrepPositions, IrrepIndices)
-% Generates the key-string from IrrepPositions and IrrepIndices
+% Generates the key-string from IrrepPositions and IrrepIndices 
+% (This function is usually called by other functions.)
 % ---
 % - IrrepPositions: format {{legname1, depID1}, {legname2, depID2}, ...}
 %                   all irreps must be specified

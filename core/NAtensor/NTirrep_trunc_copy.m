@@ -1,7 +1,13 @@
 function out = NTirrep_trunc_copy(obj, KeptIrreps)
-            % Returns a truncated copy of the tensor
-            % KeptIrreps format: {{{'legname1',depID1},IrrepList1},...}
-            % Irreps that are not specified are not truncated.
+            % Returns a truncated copy of the tensor. In the cell array
+            % KeptIrreps we specify which quantum number sectors do we want
+            % to keep. Irreps that are not listed in KeptIrreps are not truncated.
+            % ----
+            % KeptIrreps:   format: {{{'legname1',depID1},IrrepList1},...}
+            %                    * {'legname1', depID1} specifies the irrep
+            %                    * IrrepList1: cell array that contains the
+            %                      irrep indices that are kept.
+            % 
             out = NAtensor(obj.leg_names,obj.leg_types,obj.dependencies, obj.no_of_symmetries);
             irrepIDs = zeros(1,length(KeptIrreps));
             kept_irrepcodes = cell(1,length(KeptIrreps));

@@ -1,6 +1,6 @@
 function out = NTmatch_irreps(obj,irrep1,irrep2)
             % Matches two irreps, makes one irrep label of two. (Works only 
-            % if the two irreps have equal values in every block.)
+            % if the two irreps have equal values in every block, i.e. if the tensor is block diagonal)
             % irrep1 / irrep2 format: {'legname', depID}
             irrepIDs = NTlocate_irreps(obj, {irrep1,irrep2});
             if irrepIDs(1) < irrepIDs(2)

@@ -56,6 +56,8 @@ TEBD_env.StateMPS.schmidt_list{2} = NTset_block(TEBD_env.StateMPS.schmidt_list{2
 % Simulate dynamics
 n_avg = zeros(0,2);
 t = (0:dt:(Nstep*dt))';
+
+% Measurement of average charge density on both sublattices 
 n_avg(1,1) = LSMPS_expval_local_scalar_operator(TEBD_env.StateMPS,...
                                                 1,...
                                                 TEBD_env.Sites{1}.operators('n'));
@@ -63,7 +65,10 @@ n_avg(1,2) = LSMPS_expval_local_scalar_operator(TEBD_env.StateMPS,...
                                                 2,...
                                                 TEBD_env.Sites{2}.operators('n'));
 for i = 1:Nstep
+    % 
     [TEBD_env,info] = TEBD_evolve_Trotter1_Ured(TEBD_env,M_mult);
+    
+    % Measurement of average charge density on both sublattices 
     n_avg(end+1,1) = LSMPS_expval_local_scalar_operator(TEBD_env.StateMPS,...
                                                        1,...
                                                        TEBD_env.Sites{1}.operators('n'));

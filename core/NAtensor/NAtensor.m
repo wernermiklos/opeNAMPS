@@ -3,6 +3,7 @@ function out = NAtensor(LegNames, LegTypes, Dependencies, NoOfSymmetries)
 % ------------------
 % LegNames:       {'name1', 'name2', ...}
 % LegTypes:       {'type1', 'type2', ...}   type can be 'i' or 'o'
+%                                           (incoming, outgoing)
 % Dependencies:   {[dep1_1, dep1_2, ..], [dep2_1, dep2_2, ], ...}
 % NoOfSymmetries: integer, the number of symmetries
            if ~iscell(LegNames) || ~iscell(LegTypes) || ~iscell(Dependencies)

@@ -1,9 +1,12 @@
 function out = NTadd(obj, other)
-           % Adds two NAtensors ("obj" and "other"),  if their structure (leg_names, leg_types,
-           % dependency structure, block shapes) are consistent.
+           % Adds two NAtensors ("obj" and "other"),  if their structure 
+           % (leg_names, leg_types, dependency structure, block shapes) are consistent.
            %
            % It is also allowed to add a tensor to the 0 number, then the
            % nonzero tensor is just copied.
+           % ----
+           % obj:    - NAtensor
+           % other:  - the other NAtensor
            if isequal(other,0)
                out = NTcopy(obj);
            elseif isequal(obj,0)

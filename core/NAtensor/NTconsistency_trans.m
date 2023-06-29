@@ -1,6 +1,11 @@
 function [other_leg_positions, other_irrep_positions, other_key_layout] = NTconsistency_trans(obj, other)
-% Generates the consistency transformation from "other" to
+% Generates the 'consistency transformation' from "other" to
 % "obj" if the two tensors are consistent.
+% ----------------------------------------
+% obj:       - the reference NAtensor
+% other:     - the NAtensor whose consistency is checked, and for which the
+%              transformation rules (leg_positions, irrep_positions,
+%              key_layout) are generated.
 % ----------------------------------------
 % other_leg_positions:     the leg positions of "obj" in "other"
 % other_irrep_positions:   the irrep positions of "obj" in "other"

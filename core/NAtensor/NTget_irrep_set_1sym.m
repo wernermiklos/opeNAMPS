@@ -1,8 +1,13 @@
 function out = NTget_irrep_set_1sym(obj,IrrepPosition)
-            % Returns the set of possible (active) values of an irrep label specified by IrrepPosition.
-            % ---
-            % IrrepPosition:    specifies the irrep label. Format: {<legname>, depID}, where legname is the name of a
-            %                   leg, while depID specifies the irrep label as the #th dependency of the leg.
+    % Returns the set of possible (active) values of an irrep label specified 
+    % by IrrepPosition, but sets are generated separately for different
+    % symmetries.
+    % ---
+    % IrrepPosition:    specifies the irrep label. Format: {<legname>, depID}, where legname is the name of a
+    %                   leg, while depID specifies the irrep label as the #th dependency of the leg.
+    % ---
+    % out:              cell array of length obj.no_of_symmetries. Each
+    %                   cell contains a list of active quantum numbers for the given symmetry. 
             irrep_pos = NTlocate_irreps(obj,{IrrepPosition});
             key_layout = (obj.no_of_symmetries*(irrep_pos-1)+1):(obj.no_of_symmetries*irrep_pos);
             keylist = cell(1,obj.data.Count);

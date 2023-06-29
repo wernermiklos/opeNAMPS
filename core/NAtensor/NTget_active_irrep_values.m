@@ -1,5 +1,5 @@
 function irreps = NTget_active_irrep_values(obj, IrrepPositions)
-            % Similar to NTexport_all_data_blocks, but only returns the list of 
+            % Similar to NTexport_all_data_blocks, but returns only the list of 
             % irrep quantum numbers that encode active blocks.
             % --- 
             % - IrrepPositions: format {{legname1,depID1},{legname2,depID2},...}

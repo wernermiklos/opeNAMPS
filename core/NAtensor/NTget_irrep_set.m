@@ -1,8 +1,9 @@
 function out = NTget_irrep_set(obj,IrrepPosition)
-            % Returns the set of possible (active) values of an irrep label specified by IrrepPosition.
-            % ---
-            % IrrepPosition:    specifies the irrep label. Format: {<legname>, depID}, where legname is the name of a
-            %                   leg, while depID specifies the irrep label as the #th dependency of the leg.
+    % Returns the set of possible (active) values of an irrep label 
+    % specified by IrrepPosition.
+    % ---
+    % IrrepPosition:    specifies the irrep label. Format: {<legname>, depID}, where legname is the name of a
+    %                   leg, while depID specifies the irrep label as the #th dependency of the leg.
             irrep_pos = NTlocate_irreps(obj,{IrrepPosition});
             key_layout = (obj.no_of_symmetries*(irrep_pos-1)+1):(obj.no_of_symmetries*irrep_pos);
             keylist = cell(1,obj.data.Count);

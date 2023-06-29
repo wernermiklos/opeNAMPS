@@ -1,4 +1,17 @@
 function out = NTget_leg_sectors(obj,LegName)
+    % Returns the sectors (list of quantum numbers, and the corresponding
+    % dimensions) for a given leg
+    % ---
+    % obj:     the NAtensor structure
+    % LegName  the name of the leg, whose sectors are listed
+    % ---
+    % out:     cell array (length: number of sectors) 
+    %                - each cell contains a cell array of length 2:
+    %                   * in the first cell the quantum numbers of the sector are given 
+    %                        (cell array, length is the number of
+    %                        dependencies of the leg)
+    %                   * in the second cell the dimension of the sector is
+    %                     given.
             legID = NTlocate_legs(obj,{LegName});
             key_layout = zeros(1,obj.no_of_symmetries*length(obj.dependencies{legID}));
             for depID = 1:length(obj.dependencies{legID})

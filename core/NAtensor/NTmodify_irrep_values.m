@@ -1,6 +1,15 @@
 function out = NTmodify_irrep_values(obj,IrrepPosition,Gamma_to_Gammatild)
-%NT_MODIFY_IRREP_VALUES Summary of this function goes here
-%   Detailed explanation goes here
+%NT_MODIFY_IRREP_VALUES Modifies the irrep values at IrrepPosition (one
+%irrep can only be specified)
+%---
+% obj:                 the NAtensor
+% IrrepPosition:       specifies the irrep whose indices we want to modify
+%                      (one irrep can only be specified.)
+%                      format:  {'legname', depID}
+% Gamma_to_Gammatild:  array or function.
+%                      newirrepindex = Gamma_to_Gammatild(oldirrepindex)
+%                         * common example  Gamma_to_Gammatild can create the
+%                                           conjugate representation indices
     out = obj;
     key_layout = NTget_irrep_keylayout(obj,IrrepPosition);
     datakeys = keys(obj.data);

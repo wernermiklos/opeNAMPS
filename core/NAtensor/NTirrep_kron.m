@@ -1,5 +1,8 @@
 function out = NTirrep_kron(obj, other, varargin)
-            % Returns irrep_kron of obj and other.
+            % Returns irrep_kron of obj and other. 
+            % - out.no_of_symmetries = obj.no_of_symmetries + other.no_of_symmetries.
+            % - works only, if the two tensors have consistent structure
+            % (same leg names and types, same dependency structure)
             % If as third argument the string 'LNAtensor' is passed, the
             % output is LNAtensor, otherwise the full NAtensor is produced.
             if ~strcmp(other.type,'NAtensor')

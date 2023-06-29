@@ -1,5 +1,6 @@
 function out = NTget_irrep_keylayout(obj,IrrepPosition)
-%NTGET_IRREP_KEYLAYOUT Returns the key layout that corresponds to the irrep
+%NTGET_IRREP_KEYLAYOUT Returns the key layout (i.e. quantum number positions  
+%                      in the key) that corresponds to the irrep
 %                      specified in IrrepPosition
 % ---
 % IrrepPosition:    specifies the irrep label. Format: {<legname>, depID}, where legname is the name of a
