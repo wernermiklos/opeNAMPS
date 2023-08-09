@@ -1,4 +1,4 @@
-\documentclass[aps,prb,twocolumn,showpacs,preprintnumbers,amsmath,amssymb, superscriptaddress]{revtex4-2}   % version 4-2 is the newest
+\documentclass[aps,prb,twocolumn,showpacs,preprintnumbers,amsmath,amssymb, superscriptaddressm, nofootinbib]{revtex4-2}   % version 4-2 is the newest
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}    % need for subequations
 \usepackage{amssymb}
@@ -15,9 +15,14 @@
 %\usepackage{dsfont}
 \hypersetup{colorlinks,linkcolor=blue,urlcolor=blue,citecolor=blue}
 
+\newcommand{\sym}{\mathrm{sym}}
+\newcommand{\leg}{\mathrm{leg}}
+\newcommand{\rep}{\mathrm{rep}}
+\newcommand{\loc}{\mathrm{loc}}
+\newcommand{\dep}{\mathrm{dep}}
 
 \begin{document}
-\title{Short introduction to \textbf{opeNAMPS} -- an open, lightweight non-Abelian MPS library}
+\title{Short introduction to \textbf{opeNAMPS} -- an open, lightweight non-Abelian MPS software package}
 
 \author{The Authors}
 \affiliation{Department of Theoretical Physics, Institute of Physics, Budapest University of Technology and Economics, Műegyetem rkp. 3., H-1111 Budapest, Hungary}
@@ -26,12 +31,144 @@
 \date{\today}
  
 \begin{abstract}
- 
+ The opeNAMPS software package is introduced and the main functionalities are described. MatLab R2022b or newer is required to run opeNAMPS. 
 
 \end{abstract}
 \maketitle
 
-\section{Introduction}
-blablabla
+\section{About opeNAMPS}
+In this document we introduce the opeNAMPS software, that is free software under the GNU General Public License (GPLv3 \cite{GPLv3}). You are free to use and improve the software, but we kindly ask you to cite Ref.~\onlinecite{NATEBD_paper}, where the theoretical foundations of opeNAMPS are described in details.  
+
+\textbf{The current version of opeNAMPS contains} 
+\begin{itemize}
+    \item a general tensor class "NAtensor" that can be used both for Abelian and non-Abelian symmetries
+    \item MPS structures for both Abelian and non-Abelian symmetries
+    \item Time Evolving Block Decimation (TEBD) algorithm for both Abelian and non-Abelian symmetries
+    \item Structures that can store symmetries, sites for specific models.
+    \item Commonly used models like Heisenberg spin chains and the Hubbard model is also implemented.
+    \item Example run scripts for both Abelian and non-Abelian models
+\end{itemize}
+
+\section{opeNAMPS basics}
+Below we describe the basic constituents of the code. See also Ref.~\onlinecite{NATEBD_paper,MikiPhD} for a more detailed introduction. 
+
+\subsection{Quantum numbers and irrep indices}
+States of a quantum system with $N_\sym$ symmetries are usually characterized by $N_\sym$ different quantum numbers. For example, a states of a system with an $SU(2)$ spin and $U(1)$ charge symmetry are characterized by numbers $\lbrace S, Q \rbrace$, where $S$ is the total spin and $Q$ is the total charge of the state $\left| \lbrace S,Q \rbrace; \psi \right\rangle$. From a group theoretical perspective, $S$ marks an irreducible representation of the $SU(2)$ group while $Q$ marks an irrep of the $U(1)$ group. 
+
+In the opeNAMPS code, instead of using the physical quantum numbers like $S$ and $Q$, representations of simple groups are always indexed by positive integer numbers $\gamma \in \lbrace 1,2,3,\dots \rbrace$. For more then one symmetry, the collection $\Gamma = \left[ \gamma_1, \gamma_2, \dots, \gamma_{N_\sym} \right]$ of these indices stands for the total irrep index that characterizes the state. In the following, we simply refer to $\Gamma$ as the irrep index of the state, which index contains $N_\sym$ positive integers. Trivial representation is always $\Gamma = [1,1,\dots,1]$.
+
+\smallskip
+\textbf{Indexing conventions $SU(2)$, $U(1)$, and $\mathbb{Z}_2$ groups} \\
+While users are free to define their symmetries using any convention (except that the trivial representation must be $\gamma = 1$), below we show the convention used in the predefined symmetry classes.
+\begin{itemize}
+\item For the $SU(2)$ we simply use $\gamma_{SU(2)} = 2S + 1$.
+\item In case of $U(1)$ the representation index corresponding to the (integer, but possibly negative) charge $Q$ is the position index of $Q$ in the following series: $\lbrace 0, -1, +1, -2, +2, -3, +3, \dots \rbrace$, i.e.
+\begin{equation}
+   \gamma_{U(1)} = 2 |Q| + \mathbf{1}_{Q \ge 0}(Q) \;,  
+\end{equation}
+where the indicator function $\mathbf{1}_{Q \ge 0}(Q)$ is $1$ if $Q \ge 0$ and zero otherwise.
+\item In the case of $\mathbb{Z}_2$ parity symmetry $\gamma = 1$ stands for the even (+), and $\gamma=2$ for the odd (-) states.
+\end{itemize}
+
+\subsection{NA-tensors}
+NA-tensors are the basic building blocks in the opeNAMPS code. They are block-sparse tensors with a particular block structure that follows from the symmetry related quantum numbers which belong to the indices (or legs) of the NA-tensor. The data structure of NA-tensors is the following: 
+\begin{itemize}
+    \item NAtensors have $N_\leg$ legs. We refer to the legs by their names (strings) that are stored in the \verb|NAtensor.leg_names| cell array.
+    \item Legs have type (\verb|NAtensor.leg_types|), that can be incoming (\verb|'i'|) and outgoing (\verb|'o'|). Contracion rules are simple: incoming legs can be contracted only with outgoing ones.
+    \item Blocks of the tensor are indexed by a list of irrep indices, $[\Gamma_1, \Gamma_2, \dots, \Gamma_{N_\rep}]$, that we may call as the "key" of the block and which key contains a total of $N_\sym \cdot N_\rep$ positive integer numbers. 
+    \item The data blocks ($N_\leg$-dimensional arrays) are stored in \verb|NAtensor.data| variable, that is a \verb|containers.Map()| associative container (data is stored in \verb|key| $\rightarrow$ \verb|block| pairs). The key of a block is just $[\Gamma_1, \Gamma_2, \dots, \Gamma_{N_\rep}]$ casted to \verb|char| data type.
+    \item Legs of the NAtensor depend on one or more irrep indices from the "key". The \verb|NAtensor.dependencies| cell array contains the dependencies for each leg. For example, if dependencies of some leg are $[d_1, d_2, \dots, d_m]$ that means that the leg depends on $[\Gamma_{d_1}, \Gamma_{d_2}, \dots, \Gamma_{d_m}]$ irrep indices from the key. The order of dependencies is important. The different $[\Gamma_{d_1}, \Gamma_{d_2}, \dots, \Gamma_{d_m}]$ lists characterize \emph{sectors} of the leg. 
+    \item If we contract two tensors, the dependecies of the contracted legs are matched, i.e. only those blocks of the two tensors are contraced, where the  $[\Gamma_{d_1}, \Gamma_{d_2}, \dots, \Gamma_{d_m}]$ indices are the same. See also Refs.~\onlinecite{NATEBD_paper,MikiPhD} for more details. 
+\end{itemize}
+
+\textbf{Examples of NA-tensors} \\
+A simple example is the usual MPS tensor $A_{m\,\sigma}^{m'}$ that rotates from the product basis $|m\rangle \otimes |\sigma \rangle$ to the Schmidt-basis $|m'\rangle$,
+\begin{equation}
+    |m'\rangle = \sum_{m,\sigma} A_{m\,\sigma}^{m'} |m\rangle \otimes |\sigma \rangle
+\end{equation}
+If we have symmetries, and the irrep indices of states $m$, $\sigma$, and $m'$ are $\Gamma$, $\Gamma^\loc$, $\Gamma'$, respectively, then the MPS tensor can be written as an NA-tensor, $A(\lbrace \Gamma, \Gamma^\loc, \Gamma' \rbrace)_{m\sigma}^{m'}$, where the dependencies of the legs are $\dep(m) = [1]$, $\dep(\sigma) = [2]$, $\dep(m') = [3]$, i.e leg $m$ depends on the first, leg $\sigma$ on the second, and leg $m'$ on the third irrep index.
+
+An other, more interesting example is the Clebsch-Gordan tensor, that is built from the generalazied Clebsch-Gordan coefficients, 
+\begin{equation}
+    \left(\Gamma_1, m_1; \Gamma_2, m_2 | \Gamma, M \right)_\alpha \;. 
+\end{equation}
+These amplitudes are used, when we search for irreducible representations in the product of two irreps $\Gamma_1$ and $\Gamma_2$. Here $\Gamma$ is the outgoing irrep index, and $\alpha$ is the so called outer multiplicity that enumerates the multiplets in the $\Gamma_1 \times \Gamma_2$ product having the same $\Gamma$ irrep index. These Clebsch-Gordan coefficients can be stored in the NA-tensor $C(\lbrace \Gamma_1, \Gamma_2, \Gamma \rbrace)_{m_1 m_2}^{M \alpha}$ in which $\dep(m_1) = [1]$, $\dep(m_2) = [2]$, $\dep(M) = [3]$, while the outer multiplicity index has a triple dependency $\dep(\alpha) = [1,2,3]$.
+
+The main purpose of this document is the description of the code, the construction of NA-tensors and their algebraic properties are described in more details in Refs.~\onlinecite{NATEBD_paper,MikiPhD}.
+
+\textbf{Handling NA-tensors in opeNAMPS} \\
+In this short paragraph basic code examples are shown in which we define an NA-tensor, we set some blocks of it, we perform simple algebraic transformations, and contractions. The full script is in the file \verb|run_scripts/NAtensor_demo.m|, in the example the number of symmetries is \verb|NO_OF_SYMS = 2;|.
+
+Our tensor will have a dependency structure similar to the Clebsch-Gordan tensor:
+\begin{eqnarray}
+    T(\lbrace \Gamma_1, \Gamma_2, \Gamma_3 \rbrace)_{a~b}^{c~\eta} \nonumber \\
+    \dep(a) = [1], &~& \dep(b) = [2], \nonumber \\ 
+    \dep(c) = [3], &~& \dep(\eta) = [1,2,3]
+\end{eqnarray}
+The tensor has two incoming legs (\verb|'a'| and \verb|'b'|), and two outgoing legs (\verb|'c'| and \verb|'eta'|), its possible definition in the code reads as
+\begin{verbatim}
+T = NAtensor({'a','b','c','eta'}, ... 
+             {'i','i','o','o'}, ... 
+             {[1],[2],[3],[1,2,3]}, ... 
+             NO_OF_SYMS);
+\end{verbatim}
+Here the first argument is the cell array of the leg names, the second cell array contains the leg types, the third one contains the dependencies, and the fourth is just the number of symmetries. It is important, that in the dependencies $\Gamma$ labels are enumerated starting from $1$ to $m$, with no missing numbers. ($m$ is $3$ in our case): it is mandatory to index irrep labels this way.
+
+\verb|T| is now an empty NAtensor, with no active (nonzero) blocks. We can set blocks with the \verb|NTset_block| function:
+\begin{verbatim}
+T = NTset_block(T, ...
+            {{'a',1},{'b',1}, {'c',1}}, ...
+            {[2,3] ,[3,4], [4,5]}, ...
+            {'a','b','c','eta'}, ...
+            ones(4,6,8,2));
+\end{verbatim}
+Here, the first argument is the NAtensor itself\footnote{In the opeNAMPS we avoid to use classes because class function calls have a rather large overhead in MatLab.}, the second argument specifies the irrep positions (irrep is specified by a [legname - which dependency of the leg] pairs), in the third argument we give the values of irrep indices ($\Gamma$ quantum numbers), in the fourth argument we specify the order of the legs in which the tensorblock array (fifth argument, in the example a 4-order tensor filled with ones) is passed. 
+
+In the second argument it is obligatory to mark all the irrep labels once. However, the order, and the way how we refer to the irrep labels is irrelevant. The following code is equivalent with the one above,
+\begin{verbatim}
+T = NTset_block(T, ...
+            {{'b',1},{'eta',3}, {'eta',1}}, ...
+            {[3,4] ,[4,5], [2,3]}, ...
+            {'eta','b','a','c'}, ...
+            ones(2,6,4,8)); 
+\end{verbatim}
+We note that the user has a large freedom in the order in which the irreps are specified (2nd and 3rd argument), and also in the order of legs (4th and 5th argument).It is important to note one issue about the dimensions of legs within blocks: the dimensions of legs must depend only on the $\Gamma$ values of its dependency irrep labels. E.g. in our example the leg \verb|'a'| is 4 dimensional, while its dependency ($\Gamma_1$) contains the quantum numbers $[2,3]$. We may set other blocks in which $\Gamma_1$ is still $[2,3]$, while $\Gamma_2$ and $\Gamma_3$ may differ from the values in the example above: the \verb|'a'| leg must be $4$-dimensional also in these blocks. The code in its present version does not check these dimension consitencies by default.
+
+NAtensor can be multiplied by scalars, can be added to each other, or can be complex conjugated
+\begin{verbatim}
+    twoT = NTmult(T,2);   %2 * T 
+    TplusT = NTadd(T,T);  % T + T
+    TminustwoT = NTsubtr(T,twoT);  % T - 2 * T
+    minusT = NTneg(T);   % -T
+    conjT = NTconj(T);   % T*
+\end{verbatim}
+We note that complex conjugation reverses the direction of the legs (\verb|'o'| $\leftrightarrow$ \verb|'i'|).
+
+Tensors can also be contracted, i.e. incoming and outgoing legs can be connected to each other, if the sector structure (sector dimensions) of the legs are equivalent. For example the \verb|'a'| leg of \verb|T| and \verb|conjT| can be contracted. However, the result tensor would have two \verb|'b'|, two \verb|'c'| and two \verb|'eta'| legs. To resolve this naming issue, we have to rename the legs of one of the tensors. The first solution uses \verb|NTprime_all_legs|
+\begin{verbatim}
+    %NTprime_all_legs: adds '~' to leg names
+    conjT_primed = NTprime_all_names(conjT);
+    TconjT = NTdot(T,conjT_primed, ... 
+                   {'a'},{'a~'});
+\end{verbatim}
+In the second solution we rename the legs by hand prior contraction:
+\begin{verbatim}
+    conjT_renamed = NTrename_legs(conjT);
+    TconjT = NTdot(T,conjT_primed, ... 
+                   {'a'},{'a~'});
+\end{verbatim}
+
+
+
+
+
+\begin{thebibliography}{99}
+\bibitem{GPLv3} GPLv3
+\bibitem{NATEBD_paper} NATEBD paper
+\bibitem{MikiPhD}
+\bibitem{Vidal_2004} Vidal 2004
+\bibitem{Vidal_2007} Vidal 2007
+\bibitem{Schollwöck 2011} Schollwöck 2011 
+\end{thebibliography}
 
 \end{document}
