@@ -9,7 +9,7 @@
  U=1.0;
  dt=0.01;
  Nstep = 500;
- M_mult = 1024;
+ M_mult = 512;
  
 % Charge conventions:  (Q_empty = -1, Q_fermion = 1 is suitable at half
 % filling)
@@ -66,8 +66,10 @@ n_avg(1,2) = LSMPS_expval_local_scalar_operator(TEBD_env.StateMPS,...
                                                 TEBD_env.Sites{2}.operators('n'));
 for i = 1:Nstep
     % 
-    [TEBD_env,info] = TEBD_evolve_Trotter1_Ured(TEBD_env,M_mult);
-    
+    % [TEBD_env,info] = TEBD_evolve_Trotter1_Ured(TEBD_env,M_mult);  % here precalculated reduced evolvers are used 
+    [TEBD_env,info] = TEBD_evolve_Trotter1_Ufull(TEBD_env,M_mult);   % here full evolvers are used, and Clebsch-factor is used on the fly.
+
+
     % Measurement of average charge density on both sublattices 
     n_avg(end+1,1) = LSMPS_expval_local_scalar_operator(TEBD_env.StateMPS,...
                                                        1,...
