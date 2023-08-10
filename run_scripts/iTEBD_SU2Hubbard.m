@@ -8,7 +8,7 @@
  unitcell_length = 2;
  U=1.0;
  dt=0.01;
- Nstep = 500;
+ Nstep = 100;
  M_mult = 512;
  
 % Charge conventions:  (Q_empty = -1, Q_fermion = 1 is suitable at half

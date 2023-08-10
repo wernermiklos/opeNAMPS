@@ -1,13 +1,13 @@
-function TEBD_env = MOD_iTEBD_SU2_Heisenberg_init(SU2sym,unitcell_length,spinsize, J,dt)
-%MOD_ITEBD_SU2XU1_HUBBARD_INIT Summary of this function goes here
+function TEBD_env = MOD_TEBD_SU2_Heisenberg_init(SU2sym,L,spinsize, J,dt)
+%MOD_TEBD_SU2_HEISENBERG_INIT Summary of this function goes here
 %   Detailed explanation goes here
     NO_OF_SYMMETRIES = 1;
     
     % TEBD environment initialization:
-    EmptyMPS = LSMPS_create(unitcell_length,NO_OF_SYMMETRIES);
+    EmptyMPS = LSMPS_create(L,NO_OF_SYMMETRIES);
     spin_site = SITE_generate_SU2_spin_site(SU2sym,spinsize);
-    Sites = cellfun(@(x) spin_site,cell(1,unitcell_length),'UniformOutput',false);  % cell array of spinhalf sites
-    TEBD_env = TEBD_init(EmptyMPS,{SU2sym},Sites,'INFINITE',true);
+    Sites = cellfun(@(x) spin_site,cell(1,L),'UniformOutput',false);  % cell array of spinhalf sites
+    TEBD_env = TEBD_init(EmptyMPS,{SU2sym},Sites);  % finite chain
 
     % Building up the Heisenberg Hamiltonian
     % the spin tensor operators components are {-sqrt(0.5)*Sp, Sz, sqrt(0.5)*Sm}, and
@@ -15,7 +15,7 @@ function TEBD_env = MOD_iTEBD_SU2_Heisenberg_init(SU2sym,unitcell_length,spinsiz
     heis_coup = COUP_generate_TwoSite_full_OpProd({SU2sym},spin_site,spin_site,'S','S',...
                                                  {{[1,3],-1},{[2,2],1},{[3,1],-1}}); 
 
-    for bond_pos = 1:unitcell_length
+    for bond_pos = 1:(L-1)      
         TEBD_env = TEBD_set_TwoSite_H_full(TEBD_env,bond_pos,{{heis_coup,J}});
     end
 

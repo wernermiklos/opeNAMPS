@@ -3,7 +3,7 @@
 
 % Compute the Wigner 3j symbol using the Racah formula [1]. 
 
-function wigner = Wigner3j_SU2(j1,j2,j3,m1,m2,m3)
+function wigner = Wigner3j_SU2_fast(j1,j2,j3,m1,m2,m3)
 
 % error checking
 if ( 2*j1 ~= floor(2*j1) || 2*j2 ~= floor(2*j2) || 2*j3 ~= floor(2*j3) ...

@@ -1,5 +1,5 @@
 function [outdata, outshape] = NTblockdot(obj, other, legs1, legs2, shape1, shape2)
- % Performs tensor dot for dense blocks..
+ % Performs tensor dot for dense blocks. This function is obsolote, was only used before R2022b. 
             % ------------------------
             % obj:          the first tensor to be contracted.
             % other:        the other tensor to be contracted.

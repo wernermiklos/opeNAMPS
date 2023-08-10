@@ -1,7 +1,7 @@
 function out = COUP_generate_TwoSite_full_OpProd(symmetries, site1, site2, opname1, opname2, cp_combinations )
 %GENERATE_TWOSITE_OPPROD Generates the two site Operator Product for TEBD.
 %   op1 is the left site, op2 is the right, and the operator is op1 * op2!
-%   (left-to-right ordering)
+%   (left-to-right ordering is important)
 %   cp_combinations format {{[m1,m2],val},{[m1,m2],val}};
     
     

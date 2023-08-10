@@ -1,6 +1,6 @@
 function  out = LNTadd(a, b)
             % Overloading obj + other. Works only if the two tensors are
-            % consistent.
+            % consistent. Be careful, the result is a full NAtensor.
             if isequal(a,0)
                 out = b;
                 return

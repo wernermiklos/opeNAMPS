@@ -1,6 +1,14 @@
 function out = NTsimple_mult(obj, other, irrepmatch_rule)
             % Simple product of two tensors. (No legs are contracted)
-            % irrepmatch_rule format: {{{legname1_1, depID1_1},{legname2_1,
+            % ---
+            % obj:     first NAtensor object
+            % other:   second NAtensor object
+            %       :::: Remark: all the leg names of the two NAtensors must be different.
+            %       ::::         You may have to rename legs before calling this function.
+            % 
+            % irrepmatch_rule:  optional input. You may match one or more
+            %                   irreps in the two tensors. 
+            %                   format: {{{legname1_1, depID1_1},{legname2_1,
             % depID2_1}},{legname1_2, depID1_2},{legname2_2,depID2,2}}...}
             if nargin == 2
                 irrepmatch_rule = {};

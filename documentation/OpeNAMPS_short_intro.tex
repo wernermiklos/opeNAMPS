@@ -151,13 +151,33 @@ Tensors can also be contracted, i.e. incoming and outgoing legs can be connected
     TconjT = NTdot(T,conjT_primed, ... 
                    {'a'},{'a~'});
 \end{verbatim}
-In the second solution we rename the legs by hand prior contraction:
+The result is an NAtensor with six legs: \verb|{'b','b~','c','c~','eta','eta~'}|. 
+
+In the second solution we rename the legs by hand prior contraction. This solution is lengthier, but gives more freedom: we can choose arbitrary new names. In the following example we change the uncontracted leg names of \verb|conjT| to \verb|{'d','e','xi'}|
 \begin{verbatim}
-    conjT_renamed = NTrename_legs(conjT);
-    TconjT = NTdot(T,conjT_primed, ... 
-                   {'a'},{'a~'});
+    conjT_renamed = NTrename_legs(conjT, ... 
+           {'b','c','eta'},{'d','e','xi'});
+    TconjT = NTdot(T,conjT_renamed, ... 
+                   {'a'},{'a'});
 \end{verbatim}
 
+There is also a third solution: in \verb|NTdot| we have an optional 5th argument called \verb|renaming|. If we pass this, we can set the new names directly in \verb|NTdot()|.
+\vspace{6pt}
+
+\section{Abelian MPS and TEBD}
+While the general non-Abelian routings can also be used for Abelian symmetries, there are also simpler Abelian routines prepared that can also be used. In these routines everything looks more or less like in a simple non-symmetric code, and only the simple fusion rules of the corresponding Abelian symmetry group are used.
+
+\subsection{The ABSITE structure}
+
+\subsection{The ABMPS structures}
+The \verb|AB_MPS| structures are used to store Abelian matrix product states. This Abelian structure is able to store both left-canonical, right-canonical, and mixed-canonical matrix product states. The \verb|ABMPS.cut| value stores the position of the cut. Matrices for \verb|pos <= ABMPS.cut| are left canonical, while for \verb|pos > ABMPS.cut|   
+
+\subsection{The simple ABTEBD}
+
+\section{Non-Abelian MPS and TEBD}
+\subsection{Non-Abelian SITE structures}
+\subsection{Non-Abelian MPS}
+\subsection{Non-Abelian TEBD}
 
 
 

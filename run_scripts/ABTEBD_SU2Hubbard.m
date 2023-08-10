@@ -1,7 +1,7 @@
 dt = 0.01; 
 U = 3;
 L=8;
-NStep = 10; 
+NStep = 100; 
 Mmax = 64; 
 
 U1Sym = generate_U1_Symmetry(1:31,1:21,1:51); 

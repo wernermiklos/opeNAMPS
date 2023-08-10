@@ -1,10 +1,12 @@
 function out = NTsplit_irrep(obj,IrrepPos,legs_dep_on_new)
             % Splits one irrep label into two. (Usually used for splitting
             % the irrep label of irrep-'diagonal' tensors.
+            %     :::: this is the inverse of NTmatch_irreps()
             % ---
             % IrrepPos:            {legname,depID}
             % legs_dep_on_new:     cell array leg names that depend on the
-            %                      new irrep ID.
+            %                      new irrep ID instead of the old one.
+
             old_irrepID = NTlocate_irreps(obj,{IrrepPos});
             legIDs = NTlocate_legs(obj,legs_dep_on_new);
             newdeps = obj.dependencies;
