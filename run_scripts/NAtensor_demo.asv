@@ -60,7 +60,7 @@ M2minus_twoM1_2 = NTadd(M2,NTmult(M1,-2));   % M2 - 2*M1 (second way)
 minusM2 = NTneg(M2);    % -M2
 conjM1 = NTconj(M1);    % conjugation reverts the direction of legs too.
 
-% Definition of an NAtensor (second example: MPS matrix of a non-Abelian MPS)
+
 
 
 

@@ -10,6 +10,7 @@ function obj = ABSITE_create(no_of_symmetries,sector_list,varargin)
             parameters = parameter_updater(parameters,varargin);
             
             obj.type = 'AB_Site';
+            obj.name = '';
             obj.fermions = parameters.FERMIONS;
             obj.no_of_symmetries = no_of_symmetries;
             obj.sector_multiplets = containers.Map();
