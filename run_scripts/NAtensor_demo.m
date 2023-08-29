@@ -60,16 +60,28 @@ M2minus_twoM1_2 = NTadd(M2,NTmult(M1,-2));   % M2 - 2*M1 (second way)
 minusM2 = NTneg(M2);    % -M2
 conjM1 = NTconj(M1);    % conjugation reverts the direction of legs too.
 
-% Definition of an NAtensor (second example: MPS matrix of a non-Abelian MPS)
+% Definition of an NAtensor (second example: MPS matrix of a left canonical non-Abelian MPS)
+A = NAtensor({'t_left','tau','alpha','t_right'}, ...    %leg names
+              {'i','i','i','o'}, ...                    %leg types
+              {[1],[2],[1,2,3],[3]}, ...                %dependencies (mind the triple dep of 'alpha', and the overlap between deps.)                                             
+              NO_OF_SYMS);
 
+% We set now two blocks, but in two different ways. Both are correct.
+A = NTset_block(A,...
+                {{'t_left',1},{'tau',1}, {'t_right',1}}, ...   % order of irrep labels
+                {[2,3] ,[3,4], [4,5]}, ...                     % value of irrep labels
+                {'alpha','t_left','tau','t_right'}, ...            % order of legs
+                rand(1,2,3,4));                                % some random tensorblock.)
+A = NTset_block(A,...
+                {{'t_left',1},{'alpha',3}, {'alpha',2}}, ...   % order of irrep labels
+                {[1,4] ,[4,5], [2,3]}, ...                     % value of irrep labels
+                {'t_left','tau','alpha','t_right'}, ...            % order of legs
+                rand(1,5,1,4));                                % some random tensorblock.)
 
+% Demo of NTdot rules
+conjAprimed = NTconj(NTprime_all_names(A));
 
-
-% alternative, but equivalent block setting
-%T = NTset_block(T, ...
-%                {{'b',1},{'eta',3}, {'eta',1}}, ...
-%                {[3,4] ,[4,5], [2,3]}, ...
-%                {'eta','b','a','c'}, ...
-%                ones(2,6,4,8));
-
+AA1 = NTdot(A,conjAprimed,{'t_left'},{'t_left~'});
+AA2 = NTdot(A,conjAprimed,{'tau','alpha'},{'tau~','alpha~'});
+AA3 = NTdot(A,conjAprimed,{'t_left','tau','alpha'},{'t_left~','tau~','alpha~'});
 
