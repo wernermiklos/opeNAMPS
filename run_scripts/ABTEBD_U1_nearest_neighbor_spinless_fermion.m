@@ -7,7 +7,7 @@ Mmax = 64;
 NO_OF_SYMMETRIES = 1;     % Do not change, unless you rewrite the script for more symmetries.
 INFINITE = true;   
 
-U1Sym = generate_U1_Symmetry([],[],[]);    % in the Abelian code it is enough to generate the symm without the Clebsch tensor. 
+U1sym = generate_U1_Symmetry([],[],[]);    % in the Abelian code it is enough to generate the symm without the Clebsch tensor. 
 
 % In the infinite case filling is essential: the total 'charge' of the unit
 % cell must be zero. I.e. we need to specify the charge of the empty and
@@ -18,8 +18,8 @@ U1Sym = generate_U1_Symmetry([],[],[]);    % in the Abelian code it is enough to
 %half filling:
 Q_EMPTY = -1;
 Q_OCCUPIED = +1;
-REP_EMPTY = U1Sym.Qnum_to_Gamma(Q_EMPTY);
-REP_OCCUPIED = U1Sym.Qnum_to_Gamma(Q_OCCUPIED);
+REP_EMPTY = U1sym.Qnum_to_Gamma(Q_EMPTY);
+REP_OCCUPIED = U1sym.Qnum_to_Gamma(Q_OCCUPIED);
 REP_TRIV = 1;
 % Initial state: CDW state (every second site is occupied: 10101010);
 
@@ -31,14 +31,14 @@ for pos=1:L
             A = NTset_block(A,{{'t_in',1},{'tau',1},{'t_out',1}},{REP_TRIV,REP_OCCUPIED,REP_OCCUPIED},{'t_in','tau','t_out'},[1]); 
             StartMPS = ABMPS_set_matrix(StartMPS, pos, A); 
             schmidt = NAtensor({'t_left','t_right'},{'i','i'},{[1],[2]},NO_OF_SYMMETRIES); 
-            schmidt = NTset_block(schmidt,{{'t_left',1},{'t_right',1}},{REP_OCCUPIED,U1Sym.conj_reps(REP_OCCUPIED)},{'t_left','t_right'},[1]);
+            schmidt = NTset_block(schmidt,{{'t_left',1},{'t_right',1}},{REP_OCCUPIED,U1sym.conj_reps(REP_OCCUPIED)},{'t_left','t_right'},[1]);
             StartMPS.schmidt_list{pos} = schmidt; 
         case 0
             A = NAtensor({'t_in','tau','t_out'},{'i','i','o'},{[1],[2],[3]},NO_OF_SYMMETRIES); 
             A = NTset_block(A,{{'t_in',1},{'tau',1},{'t_out',1}},{REP_OCCUPIED, REP_EMPTY, REP_TRIV},{'t_in','tau','t_out'},[1]); 
             StartMPS = ABMPS_set_matrix(StartMPS, pos, A); 
             schmidt = NAtensor({'t_left','t_right'},{'i','i'},{[1],[2]},NO_OF_SYMMETRIES); 
-            schmidt = NTset_block(schmidt,{{'t_left',1},{'t_right',1}},{REP_TRIV,U1Sym.conj_reps(REP_TRIV)},{'t_left','t_right'},[1]);   % remark: conj rep of triv is triv.
+            schmidt = NTset_block(schmidt,{{'t_left',1},{'t_right',1}},{REP_TRIV,U1sym.conj_reps(REP_TRIV)},{'t_left','t_right'},[1]);   % remark: conj rep of triv is triv.
             StartMPS.schmidt_list{pos} = schmidt; 
     end
 end
