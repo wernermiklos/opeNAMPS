@@ -7,7 +7,7 @@ Mmax = 64;
 
 NO_OF_SYMMETRIES = 1;     % Do not change, unless you rewrite the script for more symmetries. 
 
-U1Sym = generate_U1_Symmetry(1:41,1:21,1:61);    % in the non-Abelian code we have to set the 
+U1sym = generate_U1_Symmetry(1:41,1:21,1:61);    % in the non-Abelian code we have to set the 
                                                  % possible representation indices.
 
 % In the infinite case filling is essential: the total 'charge' of the unit
@@ -20,8 +20,8 @@ U1Sym = generate_U1_Symmetry(1:41,1:21,1:61);    % in the non-Abelian code we ha
 Q_EMPTY = -1;
 Q_OCCUPIED = +1;
 
-REP_EMPTY = U1Sym.Qnum_to_Gamma(Q_EMPTY);
-REP_OCCUPIED = U1Sym.Qnum_to_Gamma(Q_OCCUPIED);
+REP_EMPTY = U1sym.Qnum_to_Gamma(Q_EMPTY);
+REP_OCCUPIED = U1sym.Qnum_to_Gamma(Q_OCCUPIED);
 REP_TRIV = 1;
 % Initial state: CDW state (every second site is occupied: 10101010);
 

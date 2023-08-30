@@ -16,8 +16,8 @@
  
 % Charge conventions:  (Q_empty = -1, Q_fermion = 1 is suitable at half
 % filling)
-Q_empty = -1;
-Q_fermion = 1;
+%Q_empty = -1;
+%Q_fermion = 1;
 
 rep_site = 2*S+1;
 rep_triv = 1;

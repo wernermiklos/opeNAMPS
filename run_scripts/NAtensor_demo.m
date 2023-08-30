@@ -50,7 +50,6 @@ M1dotM2_primedM2 = NTdot(M1,M2primednames,{'t_out'},{'t_in~'});
 % iii.) perform renaming on-the-fly by adding a 5th argument to NTdot
 M1dotM2_onthefly = NTdot(M1,M2,{'t_out'},{'t_in'},{{},{{'tau','tau2'}}});   % we only rename 'tau' leg of M2.
 
-
 %Simple algebraic manipulations
 
 twoM1 = NTmult(M1,2);   % 2*M1
