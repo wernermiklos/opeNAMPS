@@ -49,7 +49,7 @@ ph = NAtensor({'tau','tau~'},{'o','i'},{[1],[2]},1);
 ph = NTset_block(ph,{{'tau',1},{'tau~',1}},{[1],[1]},{'tau~','tau'},[1]);
 ph = NTset_block(ph,{{'tau',1},{'tau~',1}},{[3],[3]},{'tau~','tau'},[-1]);
 
-out = ABSITE_create(1,{{[1],1},{[3],1}},'FERMIONS');
+out = ABSITE_create(1,{{[1],1},{[3],1}},'FERMIONS',1);
 
 end
 
