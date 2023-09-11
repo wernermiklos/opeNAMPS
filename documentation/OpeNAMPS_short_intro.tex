@@ -37,7 +37,7 @@
 \maketitle
 
 \section{About opeNAMPS}
-In this document we introduce the opeNAMPS software, that is free software under the GNU General Public License (GPLv3 \cite{GPLv3}). You are free to use and improve the software, but we kindly ask you to cite Ref.~\onlinecite{NATEBD_paper}, where the theoretical foundations of opeNAMPS are described in details.  
+In this document we introduce the opeNAMPS software, that is free software under the GNU General Public License (GPLv3 \cite{GPLv3}). You are free to use and improve the software, but we kindly ask you to cite Ref.~\onlinecite{NATEBD_paper}, where the theoretical foundations of opeNAMPS are described in detail.   
 
 \textbf{The current version of opeNAMPS contains} 
 \begin{itemize}
@@ -51,7 +51,7 @@ In this document we introduce the opeNAMPS software, that is free software under
 \textbf{Important note:} Before running the scripts it is necessary to execute the \verb|pathimport.m| script from the root folder of opeNAMPS.
 
 \section{opeNAMPS basics}
-Below we describe the basic constituents of the code. See also Ref.~\onlinecite{NATEBD_paper,MikiPhD} for a more detailed introduction. 
+Below we describe the basic constituents of the code. See also Ref.~\onlinecite{NATEBD_paper,MikiPhD} for a more detailed introduction. For those interested in the basics of matrix product states and the TEBD algorithm, Refs.~\onlinecite{Vidal_2004,Vidal_2007,Schollwock_2011} are a good starting point.
 
 \subsection{Quantum numbers and irrep indices}
 States of a quantum system with $N_\sym$ symmetries are usually characterized by $N_\sym$ different quantum numbers. For example, a states of a system with an $SU(2)$ spin and $U(1)$ charge symmetry are characterized by numbers $\lbrace S, Q \rbrace$, where $S$ is the total spin and $Q$ is the total charge of the state $\left| \lbrace S,Q \rbrace; \psi \right\rangle$. From a group theoretical perspective, $S$ marks an irreducible representation of the $SU(2)$ group while $Q$ marks an irrep of the $U(1)$ group. 
@@ -77,7 +77,7 @@ NA-tensors are the basic building blocks in the opeNAMPS code. They are block-sp
     \item NAtensors have $N_\leg$ legs. We refer to the legs by their names (strings) that are stored in the \verb|NAtensor.leg_names| cell array.
     \item Legs have type (\verb|NAtensor.leg_types|), that can be incoming (\verb|'i'|) and outgoing (\verb|'o'|). Contracion rules are simple: incoming legs can be contracted only with outgoing ones.
     \item Blocks of the tensor are indexed by a list of irrep indices, $[\Gamma_1, \Gamma_2, \dots, \Gamma_{N_\rep}]$, that we may call as the "key" of the block and which key contains a total of $N_\sym \cdot N_\rep$ positive integer numbers. 
-    \item The data blocks ($N_\leg$-dimensional arrays) are stored in \verb|NAtensor.data| variable, that is a \verb|containers.Map()| associative container (data is stored in \verb|key| $\rightarrow$ \verb|block| pairs). The key of a block is just $[\Gamma_1, \Gamma_2, \dots, \Gamma_{N_\rep}]$ casted to \verb|char| data type.
+    \item The data blocks ($N_\leg$-dimensional arrays) are stored in \verb|NAtensor.data| variable, that is a \verb|containers.Map()| associative container (data is stored in \verb|key| $\rightarrow$ \verb|block| pairs). The key of a block is just $[\Gamma_1, \Gamma_2, \dots, \Gamma_{N_\rep}]$ casted to \verb|char| data type. (casting to \verb|char| is necessary for map containers)
     \item Legs of the NAtensor depend on one or more irrep indices from the "key". The \verb|NAtensor.dependencies| cell array contains the dependencies for each leg. For example, if dependencies of some leg are $[d_1, d_2, \dots, d_m]$ that means that the leg depends on $[\Gamma_{d_1}, \Gamma_{d_2}, \dots, \Gamma_{d_m}]$ irrep indices from the key. The order of dependencies is important. The different $[\Gamma_{d_1}, \Gamma_{d_2}, \dots, \Gamma_{d_m}]$ lists characterize \emph{sectors} of the leg. 
     \item If we contract two tensors, the dependecies of the contracted legs are matched, i.e. only those blocks of the two tensors are contraced, where the  $[\Gamma_{d_1}, \Gamma_{d_2}, \dots, \Gamma_{d_m}]$ indices are the same. See also Refs.~\onlinecite{NATEBD_paper,MikiPhD} for more details. 
 \end{itemize}
@@ -193,24 +193,44 @@ A good starting example for Abelian TEBD is again the U(1) spinless fermion mode
 starting from a charge density wave state $|...010101...\rangle$.
 In the script first we define the parameters of the model and the simulation, then the $U(1)$ symmetry is defined. As we want to use the infinite lattice algorithm, it is essential to define the site charges in a way, that the total charge remains zero. Therefore \verb|Q_EMPTY = -1| and \verb|Q_OCCUPIED = +1| is used. After fixing these values, the initial MPS state is set. Equipped with all these variables we can create the \verb|ABTEBD_env| variable using the \verb|MOD_ABTEBD_U1_nearest***_init| function. Below this line the simulation is performed and data is written to the screen. 
 
-If one would like to define an other model, a model initializer function (like \verb|MOD_ABTEBD_U1_nearest***_init|) must be prepared. Once the \verb|ABTEBD_env.StateMPS| and the \verb|ABTEBD_env.Ulist| is set, the TEBD simulation is ready to run.
+\subsubsection{Other, user defined Abelian models}
+If one would like to define an other model, a model initializer function (like \verb|MOD_ABTEBD_U1_nearest***_init|) must be prepared. Once the \verb|ABTEBD_env.StateMPS| and the \verb|ABTEBD_env.Ulist| is set, the TEBD simulation is ready to run. Setting up a model may needs a definition of new \verb|'ABSITE'| structure and also a new \verb|'Symmetry'| if the user wants to go beyond the predefined $U(1)$ and $\mathbb{Z}_2$ symmetries.
 
 
 \section{Non-Abelian MPS and TEBD}
+The organization of non-Abelian routines is similar to the Abelian ones. The only big difference is that the non-Abelian MPS is always left canonical, i.e. both the Clebsch-Gordan layer and the upper (structural) layer of 'A'-tensors are left canonical. Therefore, we refer to the non-Abelian MPS as \verb|'LSMPS'| in the code (meaning 'left symmetrized MPS').
+
 \subsection{Non-Abelian SITE structures}
+Non-Abelian \verb|SITE| structures resemble their Abelian counterparts. 
+Additional information are the \verb|SITE.sector_multiplets| and \verb|SITE.multiplet_dims| container maps. The former contains the dimension of \verb|'tau'| leg (i.e. the number of multiplets) for different irrep indices, the latter containes the dimension of \verb|'mu'| leg (i.e. the dimension of the representation) for different irrep indices appearing in the site. 
+
+An important difference between \verb|ABSITE| and \verb|SITE| is that for non-Abelian sites only the so called irreducible tensor operators (operators with well defined quantum numbers (irrep indices)) can be defined. 
+
+An operator is scalar if it corresponds to the trivial representation. In that case the operator is stored in a two-leg NAtensor (has only \verb|{'tau', 'tau~'}| legs). Nontrivial tensor operators are stored by their reduced matrix element tensor. If the user knows the elements of the tensor operator, this reduced matrix element tensor can be formed automatically. The code also tests wether the input is indeed a tensor operator or not. 
+
+The reduced matrix element tensor has three legs, \verb|{'tau', 'tau~', 'omega'}|, and contains three quantum numbers (irrep indices.): the irrep of \verb|'tau'|, the irrep of \verb|'tau~'|, and the irrep of the tensor operator itself. The \verb|'omega'| leg is an outer multiplicity leg. The way how it appears is described in detail in Refs.~\onlinecite{MikiPhD,NATEBD_paper}. 
+
+Other fields of \verb|SITE|, like \verb|SITE.fermionicities| are analogous with the Abelian version. The field \verb|SITE.eta_legs| is usually not used: this field appears if one defines tensor operators as product of two or more tensor operators. In that case the $\eta$ legs store the information about the 'quantum number history' of the way the operator has been defined. 
+
 \subsection{Non-Abelian MPS}
+The non-Abelian MPS is stored in the format of left symmetrized MPS, \verb|'LSMPS'|. In contrast to the abelian case, here only one list is stored for the MPS matrices (this is the \verb|LSMPS.matrices| list). As described in Refs.~\onlinecite{MikiPhD, NATEBD_paper} in detail, these matrices have four legs, \verb|{'t_left', 'tau', 'alpha', 't_right'}|, and three quantum numbers (irrep indices), that correspond to the legs \verb|'t_left'|, \verb|'tau'|, and \verb|'t_right'|. The \verb|'alpha'| leg is the outer multiplicity index, that depends on all three quantum numbers.
+
+
 \subsection{Non-Abelian TEBD}
+Similarly to the Abelian case, the necessary information for a Non-Abelian TEBD simulation is stored in a \verb|TEBD_env| variable. A good example for a non-Abelian TEBD simulation is the \verb|run_scripts/iTEBD_SU2Hubbard.m| script that is a standalone script for the $SU(2) \times U(1)$ symmetric Hubbard model.
+
 
 
 
 
 \begin{thebibliography}{99}
-\bibitem{GPLv3} GPLv3
-\bibitem{NATEBD_paper} NATEBD paper
-\bibitem{MikiPhD}
-\bibitem{Vidal_2004} Vidal 2004
-\bibitem{Vidal_2007} Vidal 2007
-\bibitem{Schollwöck 2011} Schollwöck 2011 
+\bibitem{GPLv3} GPLv3 license, \url{https://www.gnu.org/licenses/gpl-3.0.html}
+\bibitem{NATEBD_paper} M. A.  Werner, C. P.  Moca, \"O. Legeza, and G. Zar\'and
+Physical Review B \textbf{102}, 155108 (2020). \url{https://doi.org/10.1103/PhysRevB.102.155108}
+\bibitem{MikiPhD} M. A. Werner, PhD thesis (in Hungarian), \url{https://repozitorium.omikk.bme.hu/handle/10890/13184}
+\bibitem{Vidal_2004} G. Vidal, Phys. Rev. Lett. \textbf{93}, 040502 (2004). \url{https://doi.org/10.1103/PhysRevLett.93.040502}
+\bibitem{Vidal_2007} G. Vidal, Phys. Rev. Lett. \textbf{98}, 070201 (2007). \url{https://doi.org/10.1103/PhysRevLett.98.070201}
+\bibitem{Schollwock_2011} U. Schollwöck, Annals of Physics \textbf{326}, 96-192 (2011).  \url{https://doi.org/10.1016/j.aop.2010.09.012}
 \end{thebibliography}
 
 \end{document}
