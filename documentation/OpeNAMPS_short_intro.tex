@@ -219,6 +219,9 @@ The non-Abelian MPS is stored in the format of left symmetrized MPS, \verb|'LSMP
 \subsection{Non-Abelian TEBD}
 Similarly to the Abelian case, the necessary information for a Non-Abelian TEBD simulation is stored in a \verb|TEBD_env| variable. A good example for a non-Abelian TEBD simulation is the \verb|run_scripts/iTEBD_SU2Hubbard.m| script that is a standalone script for the $SU(2) \times U(1)$ symmetric Hubbard model.
 
+In this script, first the $SU(2)$ and $U(1)$ symmetries are generated. Here -- in contrast to the Abelian case -- it is necessary to fix the representation ranges for the incoming and outgoing indices. Then the simulation parameters are set and the charge of the empty site, and charge of a fermion is fixed to ensure charge neutrality of the state at the desired filling. Then the \verb|TEBD_env| variable is initialized with the \verb|MOD_iTEBD_SU2xU1_spinhalf_Hubbard_init| function. Finally, before running the simulation the initial CDW state is constructed.
+
+It is important to note, that in the non-Abelian simulation there are two options for TEBD steps. In the \verb|'Ured'| versions the precalculated reduced evolver is used, while in the \verb|'Ufull'| version the Clebsch layer is multiplied on the fly. The latter is usually faster if one has more symmetries from which one or more are Abelian symmetries.
 
 
 
